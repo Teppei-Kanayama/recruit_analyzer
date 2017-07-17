@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import collections
@@ -24,14 +25,21 @@ def show_grade_and_bunri(sheet, title, output_path):
     #文系低学年・文系高学年・理系低学年・理系高学年・医療系低学年・医療系高学年のそれぞれの割合を調べる。
     bunri_list = np.array([0, 0, 0, 0, 0, 0])
     for i in list(sheet.index):
+        if (course[i] == "B") and (grade[i] <= 3):
+            ishigh = 0
+        else:
+            ishigh = 1
+
         if not math.isnan(bunri[i]):
-            bunri_list[int(bunri[i] - 1)] += 1
+            bunri_list[int(bunri[i] - 1) * 2 + ishigh] += 1
+
     print(bunri_list)
 
     data = bunri_list
     label = ["理系（医療系以外）低学年", "理系（医療系以外）高学年", "医療系低学年", "医療系高学年", "文系低学年", "文系高学年"]
 
-    plt.style.use('ggplot')
+    #plt.style.use('ggplot')
+    plt.style.use('seaborn-pastel')
     plt.rcParams.update({'font.size':15})
     size=(9,5)
 
@@ -65,6 +73,12 @@ def show_grade(sheet, title, output_path):
 
 def main():
     #show_grade(comment1, "第一回説明会参加者の学年分布", "./figures/test.png")
-    show_grade_and_bunri(comment2, "第二回説明会参加者の文理・学年", "./figures/test.png")
+    #print(matplotlib.matplotlib_fname())
+    show_grade_and_bunri(applyment, "説明会申込者の文理・学年", "./figures/applyment_bunri-grade.png")
+    show_grade_and_bunri(comment1, "第一回説明会参加者の文理・学年", "./figures/comment1_bunri-grade.png")
+    show_grade_and_bunri(comment2, "第二回説明会参加者の文理・学年", "./figures/comment2_bunri-grade.png")
+    show_grade_and_bunri(comment3, "第三回説明会参加者の文理・学年", "./figures/comment3_bunri-grade.png")
+    show_grade_and_bunri(join, "入ゼミ者の文理・学年", "./figures/join_bunri-grade.png")
+
 if __name__ == "__main__":
     main()
